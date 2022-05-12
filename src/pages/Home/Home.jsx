@@ -1,16 +1,14 @@
 import React, {useEffect, useState} from 'react';
-import { Select } from 'antd';
-
-import { Table, Progress } from 'antd';
+import { Table, Progress, Select, Switch } from 'antd';
 import './Home.scss';
-import Menu from '../../components/Menu/Menu';
 
 const BASE_URL = 'https://api.sampleapis.com/beers';
 
 export default function Home() {
-  const [beers, setBeers] = useState([])
-  const [type, setType] = useState('ale')
-  const [sortType, setSortType] = useState()
+  const [beers, setBeers] = useState([]);
+  const [showMenu, setShowMenu] = useState(false);
+  const [type, setType] = useState('ale');
+  const [sortType, setSortType] = useState();
 
   const { Option } = Select;
 
@@ -36,16 +34,12 @@ export default function Home() {
   const onChangeName = (sort) => {
     setSortType(sort)
   }
+
+  const handleShowMenu = () => {
+    setShowMenu(!showMenu)
+  }
   
   const columns = [
-    {
-      title: 'Image',
-      dataIndex: 'image',
-      key: 'image',
-      render: (image) => (
-        <img src={image} alt="" />
-      )
-    },
     {
       title: 'Name',
       dataIndex: 'name',
@@ -63,7 +57,7 @@ export default function Home() {
       render: (rating, record) => {
         const percent = (rating.average * 100 / 5).toFixed(0);
         return (
-          <div>
+          <div key={rating.average}>
             <Progress width={60} type="circle" percent={percent} />
             {' | '} 
             <span>{rating.reviews}</span>
@@ -75,7 +69,13 @@ export default function Home() {
 
   return (
     <div className="container">
-      {/* <Menu /> */}
+       <Switch
+        checked={showMenu}
+        onChange={handleShowMenu}
+        checkedChildren="Hide"
+        unCheckedChildren="Show"
+      />
+
       <Select
         placeholder="Select a beer"
         onChange={onChange}
